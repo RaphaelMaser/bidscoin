@@ -429,8 +429,13 @@ def bidscoiner_plugin(session: Path, bidsmap: dict, bidsses: Path) -> None:
         for jsonfile in sorted(set(jsonfiles)):
 
             # Load the json meta-data
-            with jsonfile.open('r') as json_fid:
-                jsondata = json.load(json_fid)
+            try:
+                with jsonfile.open('r') as json_fid:
+                    jsondata = json.load(json_fid)
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON file {jsonfile}: {e}")
+                # You can either skip this file or handle the error in another way
+                continue
 
             # Add all the source meta data to the meta-data
             for metakey, metaval in metadata.items():
